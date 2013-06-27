@@ -6,6 +6,17 @@ function AStarPathFinder(heuristic) {
 	this.neighbours = [[1, 1], [1, 0], [1, -1], [0, 1], [0, -1], [-1, 1], [-1, 0], [-1, -1]];
 }
 
+function ManhattanHeuristic(){
+	
+}
+
+ManhattanHeuristic.prototype = {
+	cost : function(x1,y1,x2,y2) = {
+		return Math.abs(x1-x2)+Math.abs(y1-y2);
+	}
+
+}
+
 function AStarMapNode(parent, x, y, depth, heuristic, cost) {
 	this.parent = parent;
 	this.x = x;

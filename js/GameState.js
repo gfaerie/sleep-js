@@ -53,7 +53,7 @@ GameState.prototype = {
 	getBackground : function (position) {
 		return this.map[position.x][position.y];
 	},
-	addObject : function (position, object) {
+	addObject : function (object) {
 		object.id = this.idCounter++;
 		objects[object.id] = object;
 		return object.id;
