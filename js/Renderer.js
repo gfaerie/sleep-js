@@ -4,40 +4,37 @@ function GameStateRenderer(viewpoint, context, size, font, charSize, background)
 	this.size = size;
 	this.font = font;
 	this.charSize = charSize;
-	this.background=background;
+	this.background = background;
 }
 
 GameStateRenderer.prototype = {
 	render : function (engine) {
-		
-		
+
 		var center = engine.state.objects[viewpoint].position;
-		var xOffset=0;
-		var yOffset=0;
+		var xOffset = 0;
+		var yOffset = 0;
 
 		var xStart = center.x - size;
 		var xEnd = center.x + size;
 		var yStart = center.y - size;
 		var yEnd = center.y + size;
 
-		if(xStart<0){
+		if (xStart < 0) {
 			xOffset = -xStart;
-			xStart=0;
+			xStart = 0;
 		}
-		if(yStart<0){
+		if (yStart < 0) {
 			yOffset = -yStart;
-			yStart=0;
-		}	
-		if(xEnd>=engine.state.size){
-			xEnd=engine.state.size-1;
+			yStart = 0;
 		}
-		if(yEnd>=engine.state.size){
-			yEnd=engine.state.size-1;
+		if (xEnd >= engine.state.size) {
+			xEnd = engine.state.size - 1;
 		}
-		
+		if (yEnd >= engine.state.size) {
+			yEnd = engine.state.size - 1;
+		}
 
 		var graphics = [];
-
 
 		for (var x = xStart; x <= xEnd; x++) {
 			graphics.push(new Array(yEnd - yStart));
@@ -51,12 +48,12 @@ GameStateRenderer.prototype = {
 				graphics[object.position.x - xStart][object.position.y - yStart] = object.graphics;
 			}
 		}
-		
+
 		context.fillStyle = this.background;
-		context.fillRect(0, 0, this.size*this.charSize, this.size*this.charSize);
-		for (var x = 0; x <= (xEnd-xStart); x++) {
-			for (var y = 0; y <= (yEnd-yStart); y++) {
-				drawChar(graphics[x][y],"#FF0000",x+xOffset,y+yOffset);
+		context.fillRect(0, 0, this.size * this.charSize, this.size * this.charSize);
+		for (var x = 0; x <= (xEnd - xStart); x++) {
+			for (var y = 0; y <= (yEnd - yStart); y++) {
+				drawChar(graphics[x][y], "#FF0000", x + xOffset, y + yOffset);
 			}
 		}
 

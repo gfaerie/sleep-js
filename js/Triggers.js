@@ -7,14 +7,14 @@ function CleanupDeadObjects(period) {
 			lastcall = event.time;
 			return function () {
 				var toRemove = [];
-				
+
 				// check all objects
 				for (var key in engine.state.objects) {
-					if (engine.state.objects[key].hp < 0 || ) {
+					if (engine.state.objects[key].hp < 0) {
 						toRemove.push(key);
 					}
 				}
-				
+
 				// remove the low hp objects
 				for (var i = 0; i < toRemove.length; i++) {
 					engine.state.objects.removeObject(toRemove[i]);
@@ -49,12 +49,17 @@ function GameObjectMover(pathfinder, period) {
 						if (distance > 2) {
 							var endTarget = toMove.path[0];
 							toMove.path = this.pathfinder.findPath(function (pos) {
-									if (engine.state.insideGame(pos) {
-										return engine.state.getBackground(pos)
-									})
+									if (engine.state.insideGame(pos)) {
+										return engine.state.getBackground(pos);
+									} else {
 										return -1;
+									}
 								}, currentPosition, endTarget);
-						};
+						}
+					}
+					// object is still
+					else {
+						toMove.moveFraction = 0;
 					}
 
 					// move object while possible to do so
@@ -63,12 +68,8 @@ function GameObjectMover(pathfinder, period) {
 						toMove.moveFraction -= toMove.position.cost;
 					}
 				}
-				// object is still
-				else {
-					toMove.moveFraction = 0;
-				}
 			}
-		};
+
+		}
 	};
 };
-}

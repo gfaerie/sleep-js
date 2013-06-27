@@ -6,13 +6,11 @@ function AStarPathFinder(heuristic) {
 	this.neighbours = [[1, 1], [1, 0], [1, -1], [0, 1], [0, -1], [-1, 1], [-1, 0], [-1, -1]];
 }
 
-function ManhattanHeuristic(){
-	
-}
+function ManhattanHeuristic() {}
 
 ManhattanHeuristic.prototype = {
-	cost : function(x1,y1,x2,y2) = {
-		return Math.abs(x1-x2)+Math.abs(y1-y2);
+	cost : function (x1, y1, x2, y2) {
+		return Math.abs(x1 - x2) + Math.abs(y1 - y2);
 	}
 
 }
@@ -42,23 +40,25 @@ AStarPathFinder.prototype = {
 			openQueue.push(new AStarMapNode(null, start.x, start.y, 0, 0, 0));
 		}
 		while (!openQueue.isEmpty) {
-			val current = openQueue.pop()
-				if (current.x == end.x && current.y == end.y) {
-					val returnList = [];
-					return addToList(returnList, current);
+			var current = openQueue.pop();
+			if (current.x == end.x && current.y == end.y) {
+				var returnList = [];
+				return addToList(returnList, current);
+			}
+			for (var i = 0; i < neighbours.length; i++) {
+				var neighbour = neighbours[i];
+				var cost = this.sqrtTwo;
+				if (pos.x == 0 || pos.y == 0) {
+					cost = 1;
 				}
-				for (var i = 0; i < neighbours.length; i++) {
-					var neighbour = neighbours[i];
-					var cost = (if (pos.x == 0 || pos.y == 0)
-							1 else
-								this.sqrtTwo) * costFunction(current);
-						var node = new AStarMapNode(current, current.x + pos.x, current.y + pos.y, 0, 0, cost + current.cost)
-							if (!(cost < 0 || closedSet[node.mkString])) {
-								node.heuristic = this.heuristic.cost(node.x, node.y, end.x, end.y)
-									openQueue.push(node);
-							}
-				}
-				closedSet[current.mkString] = true;
+				cost = cost * costFunction(current);
+				var node = new AStarMapNode(current, current.x + pos.x, current.y + pos.y, 0, 0, cost + current.cost)
+					if (!(cost < 0 || closedSet[node.mkString])) {
+						node.heuristic = this.heuristic.cost(node.x, node.y, end.x, end.y)
+							openQueue.push(node);
+					}
+			}
+			closedSet[current.mkString] = true;
 
 			if (closedSet.size > maxCheck) {
 				return [];
