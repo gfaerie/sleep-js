@@ -1,3 +1,7 @@
+/**
+Stole this code off the internet at http://eloquentjavascript.net/appendix2.html
+*/
+
 function BinaryHeap(costFunction) {
 	this.content = [];
 	this.costFunction = costFunction;

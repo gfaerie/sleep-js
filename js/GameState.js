@@ -1,8 +1,10 @@
+// A position on the map
 function MapPosition(x, y) {
 	this.x = x;
 	this.y = y;
 }
 
+// A non-static object on the map (can move etc)
 function GameObject(graphics, type, position, hp) {
 	this.graphics = graphics;
 	this.type = type;
@@ -11,12 +13,14 @@ function GameObject(graphics, type, position, hp) {
 	this.moveFraction = 0;
 }
 
+// a static background object (floor,wall etc)
 function GameBackGround(solid, graphics, cost) {
 	this.solid = solid;
 	this.graphics = graphics;
 	this.cost = cost;
 }
 
+// state that hold map data 
 function GameState(size) {
 	this.map = [];
 	this.light = [];
@@ -30,6 +34,7 @@ function GameState(size) {
 	}
 }
 
+// meh not the best name driver map state and state updates holding triggers for event handling
 function GameEngine(state) {
 	this.state = state;
 	this.triggers = {};
@@ -95,15 +100,25 @@ GameEngine.prototype = {
 	update : function () {
 		addEvent(new TimeElapsed(new Date().getTime()));
 		for (var e = 0; e < pendingEvents.length; e++) {
+		
+			// find triggers for this event by using its type (indexed by event class type)
 			var triggerMap = getTriggerMap(typeof pendingEvents[e])
 				for (id in triggerMap) {
+				
+					// get the trigger
 					var trigger = triggerMap[id].trigger(this, pendingEvents[e]);
+					
+					// handler can return nothing if it doesn't want tot do anything, if not execute
 					if (typeof trigger !== "undefined" && trigger != null) {
 						triggersToExecute.push(trigger);
 					}
 				};
 		};
+		
+		// all events processed
 		this.pendingEvents = [];
+		
+		// execute last (they might want to remove trigger, dont want to do that during loop)
 		for (var i = 0; i < triggersToExecute.length; i++) {
 			triggersToExecute[i]();
 		};

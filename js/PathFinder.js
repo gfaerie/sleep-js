@@ -14,7 +14,9 @@ ManhattanHeuristic.prototype = {
 	}
 
 }
-
+/**
+A* path finding https://en.wikipedia.org/wiki/A*_search_algorithm
+*/
 function AStarMapNode(parent, x, y, depth, heuristic, cost) {
 	this.parent = parent;
 	this.x = x;

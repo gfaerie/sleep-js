@@ -1,3 +1,7 @@
+/**
+Not used yet, wrote to early
+
+*/
 function CleanupDeadObjects(period) {
 	this.period = period;
 	this.lastcall = 0;
@@ -45,7 +49,7 @@ function GameObjectMover(pathfinder, period) {
 						var currentPosition = toMove.position;
 						var distance = currentPosition.distanceTo(nextTarget);
 
-						// object has moved out of its path, redraw path
+						// object has moved out of its path, redraw path (meaning you set goal by setting path to something far way)
 						if (distance > 2) {
 							var endTarget = toMove.path[0];
 							toMove.path = this.pathfinder.findPath(function (pos) {

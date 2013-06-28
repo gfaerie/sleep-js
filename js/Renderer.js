@@ -36,12 +36,15 @@ GameStateRenderer.prototype = {
 
 		var graphics = [];
 
+		// fill with background
 		for (var x = xStart; x <= xEnd; x++) {
 			graphics.push(new Array(yEnd - yStart));
 			for (var y = yStart; y <= yEnd; y++) {
 				graphics[x - xStart][y - yStart] = engine.state.map[position.x][position.y].graphics;
 			}
 		}
+		
+		// overwrite background will objects
 		for (var key in engine.state.objects) {
 			var object = engine.state.objects[key];
 			if (object.position.x >= xStart && object.position.x <= xEnd && object.position.y >= yStart && object.position.y <= yEnd && object.graphics) {
@@ -49,6 +52,7 @@ GameStateRenderer.prototype = {
 			}
 		}
 
+		// draw
 		context.fillStyle = this.background;
 		context.fillRect(0, 0, this.size * this.charSize, this.size * this.charSize);
 		for (var x = 0; x <= (xEnd - xStart); x++) {
