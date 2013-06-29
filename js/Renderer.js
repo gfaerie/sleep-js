@@ -11,7 +11,6 @@ GameStateRenderer.prototype = {
 	render : function (engine) {
 	
 		// debug log remove
-		console.log("Render");
 		var center = engine.state.objects[this.viewpoint].position;
 		var xOffset = 0;
 		var yOffset = 0;
@@ -56,7 +55,7 @@ GameStateRenderer.prototype = {
 
 		// draw
 		this.context.fillStyle = this.background;
-		this.context.fillRect(0, 0, this.size * this.charSize, this.size * this.charSize);
+		this.context.fillRect(0, 0, (2*this.size+1) * this.charSize, (2*this.size+1) * this.charSize);
 		for (var x = 0; x <= (xEnd - xStart); x++) {
 			for (var y = 0; y <= (yEnd - yStart); y++) {
 				this.drawChar(graphics[x][y], "#FF0000", x + xOffset, y + yOffset);

@@ -99,7 +99,6 @@ GameEngine.prototype = {
 	},
 	update : function () {
 			// debug log remove
-		console.log("Update");
 		this.addEvent(new TimeElapsed(new Date().getTime()));
 		var triggersToExecute = [];
 		for (var e = 0; e < this.pendingEvents.length; e++) {
