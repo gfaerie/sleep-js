@@ -3,11 +3,12 @@ function Game(canvas) {
 	this.fontsize = 10;
 	this.font = "san-serif";
 	this.mapsize=256;
-	this.renderradius=50;
+	this.renderradius=35;
 	this.pathfinder = new AStarPathFinder(new ManhattanHeuristic());
 	this.player = new GameObject("@", "player", new MapPosition(10, 10), 10);
+	this.player.speed=0.03;
 	this.engine = new GameEngine(new GameState(this.mapsize));
-	this.engine.addTrigger(new GameObjectMover(this.pathfinder, 33));
+	this.engine.addTrigger(new GameObjectMover(this.pathfinder, 50));
 	this.playerid = this.engine.state.addObject(this.player);
 	var ctx = canvas.getContext("2d");
 	this.renderer = new GameStateRenderer(this.playerid, ctx, this.renderradius, this.font, this.fontsize, "rgb(0,0,0)");
@@ -25,7 +26,7 @@ Game.prototype = {
 			var y = Math.floor((e.pageY - $(this).offset().top) / parent.fontsize)-parent.renderradius;
 			var target = parent.engine.state.objects[parent.playerid].position.translate(x,y);
 			if(parent.engine.state.insideGame(target)){			
-				parent.engine.state.objects[parent.playerid].position = target;
+				parent.engine.state.objects[parent.playerid].path = [target];
 			}
 		});
 		this.populateMap();
@@ -39,9 +40,13 @@ Game.prototype = {
 	populateMap : function () {
 		for (var x = 0; x < this.engine.state.size; x++) {
 			for (var y = 0; y < this.engine.state.size; y++) {
-				if (x == 0 || y == 0 || x == this.engine.state.size - 1 || y == this.engine.state.size - 1) {
+				if (Math.floor(x/5)%3==0 && Math.floor(y/5)%3==0) {
 					this.engine.state.setBackground(new MapPosition(x, y), this.wall);
-				} else {
+				} 
+				else if (x == 0 || y == 0 || x == this.engine.state.size - 1 || y == this.engine.state.size - 1) {
+					this.engine.state.setBackground(new MapPosition(x, y), this.wall);
+				} 
+				else {
 					this.engine.state.setBackground(new MapPosition(x, y), this.floor);
 				}
 			}

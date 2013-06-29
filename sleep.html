@@ -1,7 +1,7 @@
 <html>
 <head>
-<script type="text/javascript" src="js/jquery-1.10.1.js"></script>
-<script type="text/javascript" src="js/BinaryHeap.js"></script>
+<script type="text/javascript" src="js/dependencies/jquery/jquery-1.10.1.js"></script>
+<script type="text/javascript" src="js/dependencies/goog/base.js"></script>
 <script type="text/javascript" src="js/Events.js"></script>
 <script type="text/javascript" src="js/GameState.js"></script>
 <script type="text/javascript" src="js/PathFinder.js"></script>
@@ -10,16 +10,18 @@
 <script type="text/javascript" src="js/Game.js"></script>
 
 <script type="text/javascript">
+  goog.require('goog.structs');
+  goog.require('goog.structs.PriorityQueue');
         $(document).ready(function () {
-		var game = new Game(document.getElementById("canvas"));
+			var game = new Game(document.getElementById("canvas"));
 		game.start();
 	});	
     </script>
 </head>
 <body>
 	<div id="container"
-		style="border: 1px solid; width: 1000px; height: 1000px;">
-		<canvas id="canvas" width="1000" height="1000" />
+		style="border: 1px solid; width: 800px; height: 800px;">
+		<canvas id="canvas" width="800" height="800" />
 	</div>
 </body>
 </html>

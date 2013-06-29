@@ -1,5 +1,6 @@
 function TimeElapsed(time){
 	this.time=time;
+	this.type="TimeElapsed";
 }
 
 function PotentialCollision(objects,position){

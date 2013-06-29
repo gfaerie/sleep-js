@@ -16,7 +16,7 @@ ManhattanHeuristic.prototype = {
 }
 /**
 A* path finding https://en.wikipedia.org/wiki/A*_search_algorithm
-*/
+ */
 function AStarMapNode(parent, x, y, depth, heuristic, cost) {
 	this.parent = parent;
 	this.x = x;
@@ -34,46 +34,88 @@ AStarMapNode.prototype = {
 
 AStarPathFinder.prototype = {
 	findPath : function (costFunction, start, finish) {
+		var startTime = new Date().getTime();
 		var closedSet = {};
-		var openQueue = new BinaryHeap(function (node) {
-				return node.heuristic + noce.cost;
-			});
-		if (costFunction(start) < 0) {
-			openQueue.push(new AStarMapNode(null, start.x, start.y, 0, 0, 0));
-		}
-		while (!openQueue.isEmpty) {
-			var current = openQueue.pop();
-			if (current.x == end.x && current.y == end.y) {
-				var returnList = [];
-				return addToList(returnList, current);
+		var nodes = {};
+		var openQueue = new goog.structs.PriorityQueue();
+
+		var startNode = new AStarMapNode(null, start.x, start.y, 0, 0, 0);
+		openQueue.enqueue(0, startNode.mkString());
+		nodes[startNode.mkString()]=startNode;
+		//console.log("AStarPathFinder: Finding path from " + start.mkString()+" to " + finish.mkString());
+		var i=0;
+		
+		while (!openQueue.isEmpty()) {
+			var currentPosition = openQueue.dequeue();
+			var current = nodes[currentPosition];
+			var parent="None";
+			if(current.parent){
+			parent=current.parent.mkString();
 			}
-			for (var i = 0; i < neighbours.length; i++) {
-				var neighbour = neighbours[i];
+			//console.log("AStarPathFinder: Processing " + currentPosition+" with parent "+parent);
+			if (current.x == finish.x && current.y == finish.y) {
+				var returnList = [];
+				while (current.parent) {
+					console.log("Retracing "+current.mkString());
+					returnList.push(new MapPosition(current.x, current.y));
+					var old = current;
+					current=old.parent;
+					old.parent=null;
+				}
+				var time = new Date().getTime()-startTime;
+				//console.log("AStarPathFinder: Finished after " + time+" ms");
+				return returnList;
+			}
+			
+			closedSet[current.mkString()] = true;
+			
+			for (var i = 0; i < this.neighbours.length; i++) {
+				var neighbour = this.neighbours[i];
 				var cost = this.sqrtTwo;
-				if (pos.x == 0 || pos.y == 0) {
+				if (neighbour.x == 0 || neighbour.y == 0) {
 					cost = 1;
 				}
 				cost = cost * costFunction(current);
-				var node = new AStarMapNode(current, current.x + pos.x, current.y + pos.y, 0, 0, cost + current.cost)
-					if (!(cost < 0 || closedSet[node.mkString])) {
-						node.heuristic = this.heuristic.cost(node.x, node.y, end.x, end.y)
-							openQueue.push(node);
-					}
-			}
-			closedSet[current.mkString] = true;
+				var nodeX=current.x + neighbour[0];
+				var nodeY=current.y + neighbour[1];
+				var node = new AStarMapNode(current, nodeX, nodeY, current.depth + 1, this.heuristic.cost(nodeX, nodeY, finish.x, finish.y), cost + current.cost);
+				var nodeKey= node.mkString();
+				//console.log("AStarPathFinder: Examining " +nodeKey+"="+node.cost+" ("+cost+")");
+				var explored = closedSet[nodeKey];
+				var existing = nodes[nodeKey];
+				var existingIsWorse =existing && node.cost<existing.cost;
+				var existingIsBetter =existing && node.cost>existing.cost;
 
-			if (closedSet.size > maxCheck) {
+				// check if we already have the node in the nodes tree
+				if(cost<0){
+					//console.log("AStarPathFinder: Solid terrain");
+					continue;
+				}
+				else if(explored){
+				//	console.log("AStarPathFinder: Already explored");
+						continue;
+				}				
+				else if(existingIsWorse){
+					//console.log("AStarPathFinder: Updating");
+					existing.cost=node.cost;
+					existing.parent=node.parent;
+					existing.depth=node.depth;
+				}
+				else if(existingIsBetter){
+						//			console.log("AStarPathFinder: Existing path is better");
+
+				}
+				else if (!existing && !explored && cost > 0) {
+					//console.log("AStarPathFinder: Adding");
+					openQueue.enqueue(node.heuristic + node.cost, nodeKey);
+					nodes[nodeKey]=node;
+				}
+			}
+			
+			if (closedSet.size > this.maxCheck) {
 				return [];
 			}
 		}
 		return [];
-	},
-	addToList : function (currentPositions, node) {
-		currentPositions.push(new MapPosition(node.x, node.y));
-		if (node.parent != null) {
-			return addToList(currentPositions, node.parent)
-		} else {
-			return currentPositions
-		}
 	}
 }

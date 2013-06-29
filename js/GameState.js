@@ -104,11 +104,12 @@ GameEngine.prototype = {
 		for (var e = 0; e < this.pendingEvents.length; e++) {
 		
 			// find triggers for this event by using its type (indexed by event class type)
-			var triggerMap = this.getTriggerMap(typeof this.pendingEvents[e])
-				for (id in this.triggerMap) {
+			var type = this.pendingEvents[e].type;
+			var triggerMap = this.getTriggerMap(type)
+				for (id in triggerMap) {
 				
 					// get the trigger
-					var trigger = this.triggerMap[id].trigger(this, this.pendingEvents[e]);
+					var trigger = triggerMap[id].trigger(this, this.pendingEvents[e]);
 					
 					// handler can return nothing if it doesn't want tot do anything, if not execute
 					if (typeof trigger !== "undefined" && trigger != null) {
