@@ -1,5 +1,6 @@
 <html>
 <head>
+<script type="text/javascript" src="js/jquery-1.10.1.js"></script>
 <script type="text/javascript" src="js/BinaryHeap.js"></script>
 <script type="text/javascript" src="js/Events.js"></script>
 <script type="text/javascript" src="js/GameState.js"></script>
@@ -9,10 +10,10 @@
 <script type="text/javascript" src="js/Game.js"></script>
 
 <script type="text/javascript">
-	window.onLoad=function(){
+        $(document).ready(function () {
 		var game = new Game(document.getElementById("canvas"));
 		game.start();
-	};	
+	});	
     </script>
 </head>
 <body>

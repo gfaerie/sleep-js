@@ -57,7 +57,7 @@ MapPosition.prototype = {
 
 GameState.prototype = {
 	setBackground : function (position, background) {
-		if (insideGame(position)) {
+		if (this.insideGame(position)) {
 			this.map[position.x][position.y] = background;
 		}
 	},
@@ -98,15 +98,18 @@ GameEngine.prototype = {
 		this.pendingEvents.push(event);
 	},
 	update : function () {
-		addEvent(new TimeElapsed(new Date().getTime()));
-		for (var e = 0; e < pendingEvents.length; e++) {
+			// debug log remove
+		console.log("Update");
+		this.addEvent(new TimeElapsed(new Date().getTime()));
+		var triggersToExecute = [];
+		for (var e = 0; e < this.pendingEvents.length; e++) {
 		
 			// find triggers for this event by using its type (indexed by event class type)
-			var triggerMap = getTriggerMap(typeof pendingEvents[e])
-				for (id in triggerMap) {
+			var triggerMap = this.getTriggerMap(typeof this.pendingEvents[e])
+				for (id in this.triggerMap) {
 				
 					// get the trigger
-					var trigger = triggerMap[id].trigger(this, pendingEvents[e]);
+					var trigger = this.triggerMap[id].trigger(this, this.pendingEvents[e]);
 					
 					// handler can return nothing if it doesn't want tot do anything, if not execute
 					if (typeof trigger !== "undefined" && trigger != null) {
