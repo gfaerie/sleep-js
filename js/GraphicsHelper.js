@@ -1,0 +1,69 @@
+var GraphicsHelper = {
+	buildLines : function (startX, startY, startAngle, endAngle, length) {
+		var listBuffer = [];
+		varangleDiff = (endAngle - startAngle) / (ceil((endAngle - startAngle) / (Math.sin(1 / length))));
+		var workAngle = startAngle;
+		while (workAngle <= (endAngle + 0.01)) {
+			listBuffer.push(oldBuildLine(startX, startY, workAngle, length, 0.5));
+			workAngle += angleDiff;
+		}
+		return listBuffer;
+	},
+	buildLine : function (startX, startY, angle, length) {
+		varxRatio = Math.cos(angle) * length;
+		varyRatio = Math.sin(angle) * length;
+		return buildLine(startX, startY, Math.floor(startX + xRatio), Math.floor(startY + yRatio));
+	},
+	buildLine : function (startX, startY, endX, endY) {
+		var listBuffer = [];
+		vardx = abs(endX - startX);
+		vardy = abs(endY - startY);
+		varsx = -1;
+		if (startX < endX) {
+			varsx = 1;
+		}
+		varsy = -1;
+		if (startY < endY) {
+			varsy = 1;
+		}
+		var diff = dx - dy;
+		var x = startX;
+		var y = startY;
+		while (!(x == endX && y == endY)) {
+			listBuffer.push(new MapPosition(x, y));
+			varloopDiff = 2 * diff;
+			if (loopDiff > -dy) {
+				diff = diff - dy;
+				x = x + sx;
+			}
+			if (loopDiff < dx) {
+				diff = diff + dx;
+				y = y + sy;
+			}
+		}
+		listBuffer.push(new MapPosition(x, y));
+		return listBuffer;
+	},
+	oldBuildLine : function (startX, startY, angle, length, stepSize) {
+		var listBuffer = [];
+		varxRatio = Math.cos(angle);
+		varyRatio = Math.sin(angle);
+		var workLength = length;
+		while (workLength >= 0) {
+			var endX = startX + xRatio * workLength
+				var endY = startY + yRatio * workLength
+				varx = Math.round(endX);
+			vary = Math.round(endY);
+			if (listBuffer.length != 0) {
+				varlast = listBuffer[listBuffer.length - 1];
+				if (x != last.x || y != last.y) {
+					listBuffer.push(new MapPosition(x, y));
+				}
+			} else {
+				listBuffer.push(new MapPosition(x, y));
+			}
+			workLength -= stepSize
+		}
+		return listBuffer;
+	}
+};
