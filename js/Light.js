@@ -127,13 +127,12 @@ function LineOfSightCalculator(length) {
 		for (var j = 0; j < allOuterRays.length; j++) {
 			var ray = allOuterRays[j];
 			for (var k = 0; k < ray.length; k++) {
-				if (ray[k].mkString === p.mkString) {
+				if (ray[k].mkString() === p.mkString()) {
 					affiliatedRays.push(i);
 					break;
 				}
 			}
 		}
-		console.log(p.mkString());
 		positionRayMap[p.x][p.y] = affiliatedRays;
 	}
 
@@ -146,13 +145,7 @@ LineOfSightCalculator.prototype = {
 	castLight : function (lightCallback, blockFunction, centerX, centerY, source) {
 		var parent = this;
 		for (var octant = 0; octant < 8; octant++) {
-			console.log("Checking octant " + octant);
-
-			parent.processOctant(lightCallback, blockFunction, centerX, centerY,
-				parent.xTransform[octant],
-				parent.yTransform[octant],
-				parent.invertTransform[octant],
-				source)
+			parent.processOctant(lightCallback, blockFunction, centerX, centerY,parent.xTransform[octant],parent.yTransform[octant],parent.invertTransform[octant],source);
 		}
 	},
 	processOctant : function (lightCallback, blockFunction, centerX, centerY, xTransform, yTransform, invertTransform, source) {
@@ -164,11 +157,7 @@ LineOfSightCalculator.prototype = {
 
 		// work our way from the inner most positions and outwards, checking which positions blocks which rays
 		for (var i = 0; i < parent.allPositionsArray.length; i++) {
-
 			var p = parent.allPositionsArray[i];
-
-			console.log("Checking position " + p.mkString());
-
 			var x = xTransform * (invertTransform ? p.y : p.x) + centerX;
 			var y = yTransform * (invertTransform ? p.x : p.y) + centerY;
 			var affliatedRays = parent.positionRayMap[p.x][p.y];
@@ -176,17 +165,17 @@ LineOfSightCalculator.prototype = {
 			var rayNumber = 0;
 			while (rayNumber < affliatedRays.size && !lit) {
 				var ray = affliatedRays[rayNumber];
-				console.log("Checking ray " + ray);
 
 				if (!blockedRays[ray]) {
 					lightCallback(x, y, source);
 					lit = true;
 				}
-				rayNumber += 1;
+				rayNumber = rayNumber+ 1;
 			}
+			
 			if (blockFunction(x, y)) {
-				for (var i = 0; i < affliatedRays.length; i++) {
-					var blockedRay = affliatedRays[i];
+				for (var j = 0; j < affliatedRays.length; j++) {
+					var blockedRay = affliatedRays[j];
 					if (!blockedRays[blockedRay]) {
 						blockedRays[blockedRay] = true;
 						nrBlockedRays += 1;

@@ -37,7 +37,7 @@ Game.prototype = {
 		// do update render cycle at 30 fps
 		window.setInterval(function () {
 			parent.engine.update();
-			//parent.lightCaster.castLight(parent.engine.state);
+			parent.lightCaster.castLight(parent.engine.state);
 			parent.renderer.render(parent.engine);
 		}, 33);
 	},
