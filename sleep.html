@@ -9,15 +9,22 @@
 <script type="text/javascript" src="js/Renderer.js"></script>
 <script type="text/javascript" src="js/Triggers.js"></script>
 <script type="text/javascript" src="js/Game.js"></script>
+<script type="text/javascript">
+	goog.require('goog.object');
+	goog.require('goog.structs');
+	goog.require('goog.functions');
+	goog.require('goog.structs.PriorityQueue');
+</script>
 
 <script type="text/javascript">
-  goog.require('goog.structs');
-  goog.require('goog.structs.PriorityQueue');
-        $(document).ready(function () {
-			var game = new Game(document.getElementById("canvas"));
+
+    $(document).ready(function () {
+		var game = new Game(document.getElementById("canvas"));
 		game.start();
-	});	
-    </script>
+	});		
+	var one = new MapPosition(10,10);
+	var two = new MapPosition(10,10);
+</script>
 </head>
 <body>
 	<div id="container"
