@@ -60,18 +60,26 @@ function GameObjectMover(pathfinder, period) {
 						if (distance > 2) {
 							var endTarget = toMove.path[0];
 							//console.log("GameObjectMover: Plotting path to " + endTarget.mkString());
-							toMove.path = parent.pathfinder.findPath(function (pos) {
-									if (engine.state.insideGame(pos)) {
-										return engine.state.getBackground(pos).cost;
-									} else {
-										return -1;
-									}
-								}, currentPosition, endTarget);
+							
+							// check that we want to move to a valid position
+							if (engine.state.insideGame(endTarget) && !engine.state.getBackground(endTarget).solid) {
+								toMove.path = parent.pathfinder.findPath(function (pos) {
+										if (engine.state.insideGame(pos)) {
+											return engine.state.getBackground(pos).cost;
+										} else {
+											return -1;
+										}
+									}, currentPosition, endTarget);
+							}
+							// invalid position clear path
+							else{
+								toMove.path=[];
+							}
 						}
 
 						// move object while possible to do so
-						
-						var cost = distance*engine.state.getBackground(nextTarget).cost;
+
+						var cost = distance * engine.state.getBackground(nextTarget).cost;
 						//console.log("GameObjectMover: Cost is " + nextTarget.mkString());
 						while (toMove.path.length > 0 && toMove.moveFraction > cost) {
 							toMove.position = toMove.path.pop();

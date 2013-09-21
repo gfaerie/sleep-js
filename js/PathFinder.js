@@ -34,7 +34,7 @@ AStarMapNode.prototype = {
 
 AStarPathFinder.prototype = {
 	findPath : function (costFunction, start, finish) {
-		var startTime = new Date().getTime();
+		//var startTime = new Date().getTime();
 		var closedSet = {};
 		var nodes = {};
 		var openQueue = new goog.structs.PriorityQueue();
@@ -62,7 +62,7 @@ AStarPathFinder.prototype = {
 					current=old.parent;
 					old.parent=null;
 				}
-				var time = new Date().getTime()-startTime;
+				//var time = new Date().getTime()-startTime;
 				//console.log("AStarPathFinder: Finished after " + time+" ms");
 				return returnList;
 			}
