@@ -92,7 +92,7 @@ function LineOfSightCalculator(length) {
 	this.angleSpread = Math.Pi / 4;
 
 	// all rays raching the end of an octant
-	var allOuterRays = GraphicsHelper.buildLines(0, 0, 0, angleSpread, length);
+	var allOuterRays = GraphicsHelper.buildLines(0, 0, 0, this.angleSpread, length);
 
 	// initialize map of which positions are touched by which rays
 	var positionRayMap = [];

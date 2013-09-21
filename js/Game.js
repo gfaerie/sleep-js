@@ -4,6 +4,7 @@ function Game(canvas) {
 	this.font = "san-serif";
 	this.mapsize=256;
 	this.renderradius=35;
+	this.losCalculator = new LineOfSightCalculator(20);
 	this.pathfinder = new AStarPathFinder(new ManhattanHeuristic());
 	this.player = new GameObject("@", "player", new MapPosition(10, 10), 10);
 	this.player.speed=0.03;

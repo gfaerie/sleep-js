@@ -1,7 +1,7 @@
 var GraphicsHelper = {
 	buildLines : function (startX, startY, startAngle, endAngle, length) {
 		var listBuffer = [];
-		varangleDiff = (endAngle - startAngle) / (ceil((endAngle - startAngle) / (Math.sin(1 / length))));
+		varangleDiff = (endAngle - startAngle) / (Math.ceil((endAngle - startAngle) / (Math.sin(1 / length))));
 		var workAngle = startAngle;
 		while (workAngle <= (endAngle + 0.01)) {
 			listBuffer.push(oldBuildLine(startX, startY, workAngle, length, 0.5));

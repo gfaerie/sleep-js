@@ -36,6 +36,7 @@ GameStateRenderer.prototype = {
 		}
 
 		var graphics = [];
+		var light = [];
 
 		// fill with background
 		for (var x = xStart; x <= xEnd; x++) {
