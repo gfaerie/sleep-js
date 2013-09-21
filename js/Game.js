@@ -8,11 +8,15 @@ function Game(canvas) {
 	this.pathfinder = new AStarPathFinder(new ManhattanHeuristic());
 	this.player = new GameObject("@", "player", new MapPosition(10, 10), 10);
 	this.player.speed=0.03;
+	
+	this.player.light=new LightSource(this.losCalculator,new Color(255,100,100));
+	
 	this.engine = new GameEngine(new GameState(this.mapsize));
 	this.engine.addTrigger(new GameObjectMover(this.pathfinder, 50));
 	this.playerid = this.engine.state.addObject(this.player);
 	var ctx = canvas.getContext("2d");
 	this.renderer = new GameStateRenderer(this.playerid, ctx, this.renderradius, this.font, this.fontsize, "rgb(0,0,0)");
+	this.lightCaster = new LightCaster();
 	this.floor = new GameBackGround(false, ".", 1);
 	this.wall = new GameBackGround(true, "#", -1);
 }
@@ -34,6 +38,7 @@ Game.prototype = {
 		// do update render cycle at 30 fps
 		window.setInterval(function () {
 			parent.engine.update();
+			parent.lightCaster.castLight(parent.engine.state);
 			parent.renderer.render(parent.engine);
 		}, 33);
 	},

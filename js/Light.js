@@ -4,11 +4,12 @@ function Color(red, green, blue) {
 	this.blue = blue;
 }
 
-function LightSource(losCalculator, color, intensity) {
+function LightSource(losCalculator, color) {
 	this.color = color;
-	this.intensity = intensity;
 	this.losCalculator = losCalculator;
-	this.castLight = losCalculator.castLight;
+	this.castLight = function(lightCallback, blockFunction, centerX, centerY, source){
+		losCalculator.castLight(lightCallback, blockFunction, centerX, centerY, source);
+	};
 }
 
 function CappedColorBlender() {
@@ -80,7 +81,6 @@ function LightCaster() {
 		}
 
 	}
-
 }
 
 function LineOfSightCalculator(length) {
@@ -144,7 +144,11 @@ LineOfSightCalculator.prototype = {
 	castLight : function (lightCallback, blockFunction, centerX, centerY, source) {
 		var parent = this;
 		for (var octant = 0; octant < 8; octant++) {
-			processOctant(losCallback, blockFunction, centerX, centerY, parent.xTransform[octant], parent.yTransform[octant], parent.invertTransform[octant], source)
+			parent.processOctant(lightCallback, blockFunction, centerX, centerY, 
+			parent.xTransform[octant], 
+			parent.yTransform[octant], 
+			parent.invertTransform[octant], 
+			source)
 		}
 	},
 	processOctant : function (lightCallback, blockFunction, centerX, centerY, xTransform, yTransform, invertTransform, source) {
