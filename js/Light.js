@@ -7,8 +7,8 @@ function Color(red, green, blue) {
 function LightSource(losCalculator, color, intensity) {
 	this.color = color;
 	this.intensity = intensity;
-	this.losCalculator=losCalculator;
-	this.castLight=losCalculator.castLight;
+	this.losCalculator = losCalculator;
+	this.castLight = losCalculator.castLight;
 }
 
 function CappedColorBlender() {
@@ -20,21 +20,22 @@ function CappedColorBlender() {
 	};
 }
 
-function WhiteLightColorBlender(){
+function WhiteLightColorBlender() {
 	this.blend = function (color, abs) {
-	var maxLight = Math.max(Math.max(color.red,color.green),color.blue);
-    
-    var red = Math.max(0, maxLight * (1 - abs.red));
-    var green = Math.max(0, maxLight * (1 - abs.green));
-    var blue = Math.max(0, maxLight * (1 - abs.blue));
+		var maxLight = Math.max(Math.max(color.red, color.green), color.blue);
 
-    var maxColor = Math.max(Math.max(red, green), blue);
-    if (maxColor > 255) {
-      red = red * 255 / maxColor;
-      green = green * 255 / maxColor;
-      blue = blue * 255 / maxColor;
-    }
-	return new Color(red, green, blue);
+		var red = Math.max(0, maxLight * (1 - abs.red));
+		var green = Math.max(0, maxLight * (1 - abs.green));
+		var blue = Math.max(0, maxLight * (1 - abs.blue));
+
+		var maxColor = Math.max(Math.max(red, green), blue);
+		if (maxColor > 255) {
+			red = red * 255 / maxColor;
+			green = green * 255 / maxColor;
+			blue = blue * 255 / maxColor;
+		}
+		return new Color(red, green, blue);
+	}
 }
 
 function LightCaster() {
@@ -44,8 +45,8 @@ function LightCaster() {
 			state.light[i] = new Array(state.size);
 		}
 
-		var currentObject=null;
-		
+		var currentObject = null;
+
 		// what tiles are blocked
 		var blockFunction = function (x, y) {
 			return !state.numberInsideGame(x, y) || (state.map[x][y].solid === true);
@@ -55,26 +56,26 @@ function LightCaster() {
 		var lightCallBack = function (x, y, s) {
 			if (state.numberInsideGame(x, y)) {
 				var color = state.light[x][y];
-				var attrition = 1 / (currentObject.positions.numberDistanceTo(x,y)+1);
+				var attrition = 1 / (currentObject.positions.numberDistanceTo(x, y) + 1);
 				if (!color) {
-					color=new Color(s.light.color.red*attrition, s.light.color.green*attrition, s.light.color.blue*attrition);
+					color = new Color(s.light.color.red * attrition, s.light.color.green * attrition, s.light.color.blue * attrition);
 					state.light[x][y] = color;
-					color.lastLitBy=s.id;
-				} else if(color.lastLitBy!=s.id){
-					color.red = color.red + s.light.color.red*attrition;
-					color.green = color.green + s.light.color.green*attrition;
-					color.blue = color.blue + s.light.color.blue*attrition;
-					color.lastLitBy=s.id;
+					color.lastLitBy = s.id;
+				} else if (color.lastLitBy != s.id) {
+					color.red = color.red + s.light.color.red * attrition;
+					color.green = color.green + s.light.color.green * attrition;
+					color.blue = color.blue + s.light.color.blue * attrition;
+					color.lastLitBy = s.id;
 				}
 
 			}
 		}
-		
+
 		// loop over all objects, render light for all objects that has a light
 		for (var key in state.objects) {
 			currentObject = state.objects[key];
 			if (currentObject.light) {
-				currentObject.light.castLight(lightCallBack,blockFunction,currentObject.position.x,currentObject.position.y,currentObject);
+				currentObject.light.castLight(lightCallBack, blockFunction, currentObject.position.x, currentObject.position.y, currentObject);
 			}
 		}
 
@@ -140,29 +141,20 @@ function LineOfSightCalculator(length) {
 }
 
 LineOfSightCalculator.prototype = {
-	castLight : function (lightCallback, blockFunction, centerX, centerY,source) {
+	castLight : function (lightCallback, blockFunction, centerX, centerY, source) {
 		var parent = this;
-		var emptyBlockSet = {};
 		for (var octant = 0; octant < 8; octant++) {
-			processOctant(losCallback, blockFunction, centerX, centerY, parent.xTransform[octant], parent.yTransform[octant], parent.invertTransform[octant], emptyBlockSet,source)
+			processOctant(losCallback, blockFunction, centerX, centerY, parent.xTransform[octant], parent.yTransform[octant], parent.invertTransform[octant], source)
 		}
 	},
-	processOctant : function (lightCallback, blockFunction, centerX, centerY, xTransform, yTransform, invertTransform, preBlockedRays,source) {
+	processOctant : function (lightCallback, blockFunction, centerX, centerY, xTransform, yTransform, invertTransform, source) {
 		var parent = this;
 		var blockedRays = {};
 		var nrBlockedRays = 0;
 
-		if (preBlockedRays.size >= numberOfRays) {
-			return;
-		}
-
-		for (var blocked = 0; blocked < preBlockedRays.length; blocked++) {
-			var ray = preBlockedRays[blocked];
-			blockedRays[ray] = true;
-			nrBlockedRays += 1;
-		}
-
 		var positionIndex = 0;
+
+		// work our way from the inner most positions and outwards, checking which positions blocks which rays
 		for (var i = 0; i < parent.allPositionsArray.length; i++) {
 			var p = parent.allPositionsArray[i];
 			var x = xTransform * (invertTransform ? p.y : p.x) + centerX;
@@ -173,7 +165,7 @@ LineOfSightCalculator.prototype = {
 			while (rayNumber < affliatedRays.size && !lit) {
 				var ray = affliatedRays[rayNumber]
 					if (!blockedRays[ray]) {
-						lightCallback(x, y,source);
+						lightCallback(x, y, source);
 						lit = true;
 					}
 					rayNumber += 1;
@@ -184,6 +176,8 @@ LineOfSightCalculator.prototype = {
 					if (!blockedRays[blockedRay]) {
 						blockedRays[blockedRay] = true;
 						nrBlockedRays += 1;
+
+						// all rays are blocked
 						if (nrBlockedRays >= numberOfRays) {
 							return;
 						}
