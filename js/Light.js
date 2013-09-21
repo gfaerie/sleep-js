@@ -7,7 +7,7 @@ function Color(red, green, blue) {
 function LightSource(losCalculator, color) {
 	this.color = color;
 	this.losCalculator = losCalculator;
-	this.castLight = function(lightCallback, blockFunction, centerX, centerY, source){
+	this.castLight = function (lightCallback, blockFunction, centerX, centerY, source) {
 		losCalculator.castLight(lightCallback, blockFunction, centerX, centerY, source);
 	};
 }
@@ -58,6 +58,7 @@ function LightCaster() {
 			if (state.numberInsideGame(x, y)) {
 				var color = state.light[x][y];
 				var attrition = 1 / (currentObject.positions.numberDistanceTo(x, y) + 1);
+
 				if (!color) {
 					color = new Color(s.light.color.red * attrition, s.light.color.green * attrition, s.light.color.blue * attrition);
 					state.light[x][y] = color;
@@ -89,10 +90,10 @@ function LineOfSightCalculator(length) {
 	this.yTransform = [1, 1, -1, -1, -1, -1, 1, 1];
 	this.invertTransform = [false, true, true, false, false, true, true, false];
 	this.invertBeamOrderOnBlock = [false, true, false, true, false, true, false, true, false];
-	this.angleSpread = Math.Pi / 4;
+	this.angleSpread = Math.PI / 4;
 
 	// all rays raching the end of an octant
-	var allOuterRays = GraphicsHelper.buildLines(0, 0, 0, this.angleSpread, length);
+	var allOuterRays = GraphicsHelper.buildLines(0, 0, 0, this.angleSpread, length - 1);
 
 	// initialize map of which positions are touched by which rays
 	var positionRayMap = [];
@@ -116,7 +117,7 @@ function LineOfSightCalculator(length) {
 		}
 	}
 	allPositionsArray.sort(function (a, b) {
-		return a.x * a.x + a.y * a.y - b.x * b.x - b.y * b.y
+		return Math.sqrt(a.x * a.x + a.y * a.y - b.x * b.x - b.y * b.y);
 	});
 
 	// now check which positions are lite by which rays
@@ -132,6 +133,7 @@ function LineOfSightCalculator(length) {
 				}
 			}
 		}
+		console.log(p.mkString());
 		positionRayMap[p.x][p.y] = affiliatedRays;
 	}
 
@@ -144,11 +146,13 @@ LineOfSightCalculator.prototype = {
 	castLight : function (lightCallback, blockFunction, centerX, centerY, source) {
 		var parent = this;
 		for (var octant = 0; octant < 8; octant++) {
-			parent.processOctant(lightCallback, blockFunction, centerX, centerY, 
-			parent.xTransform[octant], 
-			parent.yTransform[octant], 
-			parent.invertTransform[octant], 
-			source)
+			console.log("Checking octant " + octant);
+
+			parent.processOctant(lightCallback, blockFunction, centerX, centerY,
+				parent.xTransform[octant],
+				parent.yTransform[octant],
+				parent.invertTransform[octant],
+				source)
 		}
 	},
 	processOctant : function (lightCallback, blockFunction, centerX, centerY, xTransform, yTransform, invertTransform, source) {
@@ -160,19 +164,25 @@ LineOfSightCalculator.prototype = {
 
 		// work our way from the inner most positions and outwards, checking which positions blocks which rays
 		for (var i = 0; i < parent.allPositionsArray.length; i++) {
+
 			var p = parent.allPositionsArray[i];
+
+			console.log("Checking position " + p.mkString());
+
 			var x = xTransform * (invertTransform ? p.y : p.x) + centerX;
 			var y = yTransform * (invertTransform ? p.x : p.y) + centerY;
 			var affliatedRays = parent.positionRayMap[p.x][p.y];
 			var lit = false;
 			var rayNumber = 0;
 			while (rayNumber < affliatedRays.size && !lit) {
-				var ray = affliatedRays[rayNumber]
-					if (!blockedRays[ray]) {
-						lightCallback(x, y, source);
-						lit = true;
-					}
-					rayNumber += 1;
+				var ray = affliatedRays[rayNumber];
+				console.log("Checking ray " + ray);
+
+				if (!blockedRays[ray]) {
+					lightCallback(x, y, source);
+					lit = true;
+				}
+				rayNumber += 1;
 			}
 			if (blockFunction(x, y)) {
 				for (var i = 0; i < affliatedRays.length; i++) {
@@ -182,7 +192,7 @@ LineOfSightCalculator.prototype = {
 						nrBlockedRays += 1;
 
 						// all rays are blocked
-						if (nrBlockedRays >= numberOfRays) {
+						if (nrBlockedRays >= parent.numberOfRays) {
 							return;
 						}
 					}

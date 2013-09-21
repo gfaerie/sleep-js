@@ -1,15 +1,17 @@
-function GameStateRenderer(viewpoint, context, size, font, charSize, background) {
+function GameStateRenderer(viewpoint, context, size, font, charSize, background, backgroundBlender, objectBlender) {
 	this.viewpoint = viewpoint;
 	this.context = context;
 	this.size = size;
 	this.font = font;
 	this.charSize = charSize;
 	this.background = background;
+	this.backgroundBlender=backgroundBlender;
+	this.objectBlender=objectBlender;
 }
 
 GameStateRenderer.prototype = {
 	render : function (engine) {
-	
+		var parent = this;
 		// debug log remove
 		var center = engine.state.objects[this.viewpoint].position;
 		var xOffset = 0;
@@ -37,10 +39,11 @@ GameStateRenderer.prototype = {
 
 		var graphics = [];
 		var light = [];
-
+		
 		// fill with background
 		for (var x = xStart; x <= xEnd; x++) {
 			graphics.push(new Array(yEnd - yStart));
+			light.push(new Array(yEnd - yStart));
 			for (var y = yStart; y <= yEnd; y++) {
 				graphics[x - xStart][y - yStart] = engine.state.map[x][y].graphics;
 			}
@@ -53,13 +56,17 @@ GameStateRenderer.prototype = {
 				graphics[object.position.x - xStart][object.position.y - yStart] = object.graphics;
 			}
 		}
+		
+		
 
 		// draw
 		this.context.fillStyle = this.background;
 		this.context.fillRect(0, 0, (2*this.size+1) * this.charSize, (2*this.size+1) * this.charSize);
 		for (var x = 0; x <= (xEnd - xStart); x++) {
 			for (var y = 0; y <= (yEnd - yStart); y++) {
-				this.drawChar(graphics[x][y], "#FF0000", x + xOffset, y + yOffset);
+
+					this.drawChar(graphics[x][y], "red", x + xOffset, y + yOffset);
+				
 			}
 		}
 

@@ -5,12 +5,13 @@ function MapPosition(x, y) {
 }
 
 // A non-static object on the map (can move etc)
-function GameObject(graphics, type, position, hp) {
+function GameObject(graphics, type, position, hp,color) {
 	this.graphics = graphics;
 	this.type = type;
 	this.position = position;
 	this.hp = hp;
 	this.moveFraction = 0;
+	this.color=color;
 }
 
 // a static background object (floor,wall etc)
