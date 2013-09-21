@@ -50,8 +50,11 @@ MapPosition.prototype = {
 		return new MapPosition(this.x + x, this.y + y);
 	},
 	distanceTo : function (position) {
-		var xdiff = position.x - this.x;
-		var ydiff = position.y - this.y;
+		return this.numberDistanceTo(position.x ,position.y);
+	},
+	numberDistanceTo : function (x,y) {
+		var xdiff = x - this.x;
+		var ydiff = y - this.y;
 		return Math.sqrt(xdiff * xdiff + ydiff * ydiff);
 	}
 };

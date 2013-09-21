@@ -4,13 +4,15 @@ function Color(red, green, blue) {
 	this.blue = blue;
 }
 
-function LightSource(color, intensity) {
+function LightSource(losCalculator, color, intensity) {
 	this.color = color;
 	this.intensity = intensity;
+	this.losCalculator=losCalculator;
+	this.castLight=losCalculator.castLight;
 }
 
 function CappedColorBlender() {
-	this.blend = function (rgb, abs) {
+	this.blend = function (color, abs) {
 		var red = Math.max(0, Math.min(color.red * (1 - abs.red), 255));
 		var green = Math.max(0, Math.min(color.green * (1 - abs.green), 255));
 		var blue = Math.max(0, Math.min(color.blue * (1 - abs.blue), 255));
@@ -18,38 +20,61 @@ function CappedColorBlender() {
 	};
 }
 
-function LightCaster(losCalculator) {
+function WhiteLightColorBlender(){
+	this.blend = function (color, abs) {
+	var maxLight = Math.max(Math.max(color.red,color.green),color.blue);
+    
+    var red = Math.max(0, maxLight * (1 - abs.red));
+    var green = Math.max(0, maxLight * (1 - abs.green));
+    var blue = Math.max(0, maxLight * (1 - abs.blue));
+
+    var maxColor = Math.max(Math.max(red, green), blue);
+    if (maxColor > 255) {
+      red = red * 255 / maxColor;
+      green = green * 255 / maxColor;
+      blue = blue * 255 / maxColor;
+    }
+	return new Color(red, green, blue);
+}
+
+function LightCaster() {
 	this.castLight = function (state) {
 		//zero the current light
 		for (var i = 0; i < state.size; i++) {
 			state.light[i] = new Array(state.size);
 		}
 
+		var currentObject=null;
+		
+		// what tiles are blocked
 		var blockFunction = function (x, y) {
 			return !state.numberInsideGame(x, y) || (state.map[x][y].solid === true);
 		}
 
+		// what do we do when a tile is lit
 		var lightCallBack = function (x, y, s) {
 			if (state.numberInsideGame(x, y)) {
 				var color = state.light[x][y];
+				var attrition = 1 / (currentObject.positions.numberDistanceTo(x,y)+1);
 				if (!color) {
-					color=new Color(s.light.color.red, s.light.color.green, s.light.color.blue);
+					color=new Color(s.light.color.red*attrition, s.light.color.green*attrition, s.light.color.blue*attrition);
 					state.light[x][y] = color;
 					color.lastLitBy=s.id;
 				} else if(color.lastLitBy!=s.id){
-					color.red = color.red + s.light.color.red;
-					color.green = color.green + s.light.color.green;
-					color.blue = color.blue + s.light.color.blue;
+					color.red = color.red + s.light.color.red*attrition;
+					color.green = color.green + s.light.color.green*attrition;
+					color.blue = color.blue + s.light.color.blue*attrition;
 					color.lastLitBy=s.id;
 				}
 
 			}
 		}
 		
+		// loop over all objects, render light for all objects that has a light
 		for (var key in state.objects) {
-			var currentObject = state.objects[key];
+			currentObject = state.objects[key];
 			if (currentObject.light) {
-				losCalculator.castLight(lightCallBack,blockFunction,currentObject.position.x,currentObject.position.y,currentObject);
+				currentObject.light.castLight(lightCallBack,blockFunction,currentObject.position.x,currentObject.position.y,currentObject);
 			}
 		}
 
