@@ -3,6 +3,7 @@
 <script type="text/javascript" src="js/dependencies/jquery/jquery-1.10.1.js"></script>
 <script type="text/javascript" src="js/dependencies/goog/base.js"></script>
 <script type="text/javascript" src="js/GraphicsHelper.js"></script>
+<script type="text/javascript" src="js/Light.js"></script>
 <script type="text/javascript" src="js/Events.js"></script>
 <script type="text/javascript" src="js/GameState.js"></script>
 <script type="text/javascript" src="js/PathFinder.js"></script>
@@ -15,15 +16,11 @@
 	goog.require('goog.functions');
 	goog.require('goog.structs.PriorityQueue');
 </script>
-
 <script type="text/javascript">
-
     $(document).ready(function () {
 		var game = new Game(document.getElementById("canvas"));
 		game.start();
 	});		
-	var one = new MapPosition(10,10);
-	var two = new MapPosition(10,10);
 </script>
 </head>
 <body>

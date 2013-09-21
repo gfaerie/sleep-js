@@ -19,7 +19,6 @@ function Game(canvas) {
 Game.prototype = {
 	start : function () {
 		var parent = this;
-		
 		// click means players want to move there, right now we teleport
 		$("#canvas").click(function (e) {
 			var x = Math.floor((e.pageX - $(this).offset().left) / parent.fontsize)-parent.renderradius;

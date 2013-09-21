@@ -56,7 +56,7 @@ AStarPathFinder.prototype = {
 			if (current.x == finish.x && current.y == finish.y) {
 				var returnList = [];
 				while (current.parent) {
-					console.log("Retracing "+current.mkString());
+					//console.log("Retracing "+current.mkString());
 					returnList.push(new MapPosition(current.x, current.y));
 					var old = current;
 					current=old.parent;

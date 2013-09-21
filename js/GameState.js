@@ -14,10 +14,11 @@ function GameObject(graphics, type, position, hp) {
 }
 
 // a static background object (floor,wall etc)
-function GameBackGround(solid, graphics, cost) {
+function GameBackGround(solid, graphics, cost, color) {
 	this.solid = solid;
 	this.graphics = graphics;
 	this.cost = cost;
+	this.color = color;
 }
 
 // state that hold map data 
@@ -72,8 +73,11 @@ GameState.prototype = {
 	removeObject : function (object) {
 		delete objects[object.id];
 	},
-	insideGame : function (position) {
-		return position.x >= 0 && position.x < this.size && position.y >= 0 && position.y < this.size;
+	insideGame : function (p) {
+		return this.numberInsideGame(p.x,p.y);
+	},
+	numberInsideGame : function (x,y) {
+		return x >= 0 && x < this.size && y >= 0 && y < this.size;
 	}
 };
 
