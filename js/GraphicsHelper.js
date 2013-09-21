@@ -5,7 +5,7 @@ var GraphicsHelper = {
 		var workAngle = startAngle;
 		while (workAngle <= (endAngle + 0.01)) {
 			listBuffer.push(this.oldBuildLine(startX, startY, workAngle, length, 0.5));
-			workAngle += angleDiff;
+			workAngle = workAngle+ angleDiff;
 		}
 		return listBuffer;
 	},
@@ -16,8 +16,8 @@ var GraphicsHelper = {
 	},
 	buildLine : function (startX, startY, endX, endY) {
 		var listBuffer = [];
-		var dx = abs(endX - startX);
-		var dy = abs(endY - startY);
+		var dx = Math.abs(endX - startX);
+		var dy = Math.abs(endY - startY);
 		var sx = -1;
 		if (startX < endX) {
 			varsx = 1;

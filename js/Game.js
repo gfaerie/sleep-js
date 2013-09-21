@@ -2,9 +2,9 @@ function Game(canvas) {
 	console.log("Game: New game started");
 	this.fontsize = 10;
 	this.font = "san-serif";
-	this.mapsize=32;
+	this.mapsize=64;
 	this.renderradius=35;
-	this.losCalculator = new LineOfSightCalculator(20);
+	this.losCalculator = new LineOfSightCalculator(30.0);
 	this.pathfinder = new AStarPathFinder(new ManhattanHeuristic());
 	this.player = new GameObject("@", "player", new MapPosition(10, 10), 10,new Color(0,0,0));
 	this.player.speed=0.03;

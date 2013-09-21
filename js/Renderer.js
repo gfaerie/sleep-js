@@ -46,6 +46,9 @@ GameStateRenderer.prototype = {
 			light.push(new Array(yEnd - yStart));
 			for (var y = yStart; y <= yEnd; y++) {
 				graphics[x - xStart][y - yStart] = engine.state.map[x][y].graphics;
+				if(engine.state.light[x] && engine.state.light[x][y]){
+					light[x - xStart][y - yStart] = parent.backgroundBlender.blend(engine.state.light[x][y],engine.state.map[x][y].color);
+				}
 			}
 		}
 		
@@ -54,6 +57,9 @@ GameStateRenderer.prototype = {
 			var object = engine.state.objects[key];
 			if (object.position.x >= xStart && object.position.x <= xEnd && object.position.y >= yStart && object.position.y <= yEnd && object.graphics) {
 				graphics[object.position.x - xStart][object.position.y - yStart] = object.graphics;
+				if(engine.state.light[x] && engine.state.light[x][y]){
+					light[object.position.x - xStart][object.position.y - yStart] = parent.objectBlender.blend(engine.state.light[x][y],object.color);
+				}
 			}
 		}
 		
@@ -64,9 +70,12 @@ GameStateRenderer.prototype = {
 		this.context.fillRect(0, 0, (2*this.size+1) * this.charSize, (2*this.size+1) * this.charSize);
 		for (var x = 0; x <= (xEnd - xStart); x++) {
 			for (var y = 0; y <= (yEnd - yStart); y++) {
-
+				if(light[x][y]){
 					this.drawChar(graphics[x][y], "red", x + xOffset, y + yOffset);
-				
+				}
+				else{
+					this.drawChar(graphics[x][y], "green", x + xOffset, y + yOffset);
+				}
 			}
 		}
 
