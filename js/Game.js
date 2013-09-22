@@ -35,11 +35,25 @@ Game.prototype = {
 		});
 		this.populateMap();
 		
+		var total = 0;
+		var count =0;
 		// do update render cycle at 30 fps
 		window.setInterval(function () {
+			count = count+1;
+			var start = new Date().getTime();
 			parent.engine.update();
 			parent.lightCaster.castLight(parent.engine.state);
 			parent.renderer.render(parent.engine);
+			var end = new Date().getTime();
+			total = total + end-start;
+			
+			if(count ==200){
+				var avgTime = total/count;
+				console.log("Average render time: "+avgTime+" ms. Time used: "+Math.round((avgTime/33)*100.0)+"%");
+				count=0;
+				total=0;
+			}
+			
 		}, 33);
 	},
 	populateMap : function () {
