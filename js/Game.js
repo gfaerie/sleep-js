@@ -8,7 +8,7 @@ function Game(canvas) {
 	this.pathfinder = new AStarPathFinder(new ManhattanHeuristic());
 	this.player = new GameObject("@", "player", new MapPosition(10, 10), 10,new Color(0,0.9,0.9));
 	this.player.speed=0.03;
-	this.player.light=new LightSource(this.losCalculator,new Color(2400.0,900.0,300.0));
+	this.player.light=new LightSource(this.losCalculator,new Color(4000.0,1500.0,400.0));
 	
 	this.engine = new GameEngine(new GameState(this.mapsize));
 	this.engine.addTrigger(new GameObjectMover(this.pathfinder, 50));
@@ -18,6 +18,7 @@ function Game(canvas) {
 	this.lightCaster = new LightCaster();
 	this.floor = new GameBackGround(false, ".", 1, new Color(0.3,0.3,0.3));
 	this.wall = new GameBackGround(true, "#", -1, new Color(0.5,0.5,0.5));
+	this.water = new GameBackGround(false, "~", 10, new Color(0.92,0.92,0.05));
 }
 
 Game.prototype = {
@@ -50,9 +51,14 @@ Game.prototype = {
 				else if (x == 0 || y == 0 || x == this.engine.state.size - 1 || y == this.engine.state.size - 1) {
 					this.engine.state.setBackground(new MapPosition(x, y), this.wall);
 				} 
+			
 				else {
 					this.engine.state.setBackground(new MapPosition(x, y), this.floor);
 				}
+				
+				if (x >=20 && x<=30 && y >=20 && y<=30) {
+					this.engine.state.setBackground(new MapPosition(x, y), this.water);
+				} 
 			}
 		}
 	}
