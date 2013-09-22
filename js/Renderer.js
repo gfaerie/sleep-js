@@ -71,10 +71,7 @@ GameStateRenderer.prototype = {
 		for (var x = 0; x <= (xEnd - xStart); x++) {
 			for (var y = 0; y <= (yEnd - yStart); y++) {
 				if(light[x][y]){
-					this.drawChar(graphics[x][y], "red", x + xOffset, y + yOffset);
-				}
-				else{
-					this.drawChar(graphics[x][y], "green", x + xOffset, y + yOffset);
+					this.drawChar(graphics[x][y], "rgb("+light[x][y].red+","+light[x][y].green+","+light[x][y].blue+")", x + xOffset, y + yOffset);
 				}
 			}
 		}

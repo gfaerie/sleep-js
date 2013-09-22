@@ -6,18 +6,18 @@ function Game(canvas) {
 	this.renderradius=35;
 	this.losCalculator = new LineOfSightCalculator(30.0);
 	this.pathfinder = new AStarPathFinder(new ManhattanHeuristic());
-	this.player = new GameObject("@", "player", new MapPosition(10, 10), 10,new Color(0,0,0));
+	this.player = new GameObject("@", "player", new MapPosition(10, 10), 10,new Color(0,0.9,0.9));
 	this.player.speed=0.03;
-	this.player.light=new LightSource(this.losCalculator,new Color(255,100,100));
+	this.player.light=new LightSource(this.losCalculator,new Color(2400.0,900.0,300.0));
 	
 	this.engine = new GameEngine(new GameState(this.mapsize));
 	this.engine.addTrigger(new GameObjectMover(this.pathfinder, 50));
 	this.playerid = this.engine.state.addObject(this.player);
 	var ctx = canvas.getContext("2d");
-	this.renderer = new GameStateRenderer(this.playerid, ctx, this.renderradius, this.font, this.fontsize, "rgb(0,0,0)", new WhiteLightColorBlender(), new CappedColorBlender());
+	this.renderer = new GameStateRenderer(this.playerid, ctx, this.renderradius, this.font, this.fontsize, "rgb(0,0,0)", new CappedColorBlender(), new WhiteLightColorBlender());
 	this.lightCaster = new LightCaster();
-	this.floor = new GameBackGround(false, ".", 1, new Color(0,0,0));
-	this.wall = new GameBackGround(true, "#", -1, new Color(0,0,0));
+	this.floor = new GameBackGround(false, ".", 1, new Color(0.3,0.3,0.3));
+	this.wall = new GameBackGround(true, "#", -1, new Color(0.5,0.5,0.5));
 }
 
 Game.prototype = {

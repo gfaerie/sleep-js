@@ -2,6 +2,10 @@ function Color(red, green, blue) {
 	this.red = red;
 	this.green = green;
 	this.blue = blue;
+	
+	this.mkString=function(){
+		return this.red+","+this.green+","+this.blue;
+	}
 }
 
 function LightSource(losCalculator, color) {
@@ -14,9 +18,9 @@ function LightSource(losCalculator, color) {
 
 function CappedColorBlender() {
 	this.blend = function (color, abs) {
-		var red = Math.max(0, Math.min(color.red * (1 - abs.red), 255));
-		var green = Math.max(0, Math.min(color.green * (1 - abs.green), 255));
-		var blue = Math.max(0, Math.min(color.blue * (1 - abs.blue), 255));
+		var red = Math.round(Math.max(0, Math.min(color.red * (1 - abs.red), 255)));
+		var green = Math.round(Math.max(0, Math.min(color.green * (1 - abs.green), 255)));
+		var blue = Math.round(Math.max(0, Math.min(color.blue * (1 - abs.blue), 255)));
 		return new Color(red, green, blue);
 	};
 }
@@ -35,7 +39,7 @@ function WhiteLightColorBlender() {
 			green = green * 255 / maxColor;
 			blue = blue * 255 / maxColor;
 		}
-		return new Color(red, green, blue);
+		return new Color(Math.round(red), Math.round(green), Math.round(blue));
 	}
 }
 
@@ -46,8 +50,6 @@ function LightCaster() {
 			state.light[i] = new Array(state.size);
 		}
 
-		var currentObject = null;
-
 		// what tiles are blocked
 		var blockFunction = function (x, y) {
 			return (state.numberInsideGame(x, y)!==true) || (state.map[x][y].solid === true);
@@ -57,25 +59,23 @@ function LightCaster() {
 		var lightCallBack = function (x, y, s) {
 			if (state.numberInsideGame(x, y)) {
 				var color = state.light[x][y];
-				var attrition = 1 / (currentObject.position.numberDistanceTo(x, y) + 1);
-
-				if (!color) {
+				var attrition = 1.0 / (s.position.numberDistanceTo(x, y) + 1);
+				if (color ===  null || color === undefined) {
 					color = new Color(s.light.color.red * attrition, s.light.color.green * attrition, s.light.color.blue * attrition);
-					state.light[x][y] = color;
 					color.lastLitBy = s.id;
+					state.light[x][y] = color;
 				} else if (color.lastLitBy !== s.id) {
 					color.red = color.red + s.light.color.red * attrition;
 					color.green = color.green + s.light.color.green * attrition;
 					color.blue = color.blue + s.light.color.blue * attrition;
 					color.lastLitBy = s.id;
 				}
-
 			}
 		}
 
 		// loop over all objects, render light for all objects that has a light
 		for (var key in state.objects) {
-			currentObject = state.objects[key];
+			var currentObject = state.objects[key];
 			if (currentObject.light) {
 				currentObject.light.castLight(lightCallBack, blockFunction, currentObject.position.x, currentObject.position.y, currentObject);
 			}
