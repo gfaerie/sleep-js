@@ -18,6 +18,7 @@
 </script>
 <script type="text/javascript">
     $(document).ready(function () {
+	$('#container').on('contextmenu', function(e){ return false; });
 		var game = new Game(document.getElementById("canvas"));
 		game.start();
 	});		
@@ -26,7 +27,7 @@
 <body>
 	<div id="container"
 		style="border: 1px solid; width: 800px; height: 800px;">
-		<canvas id="canvas" width="800" height="800" />
+		<canvas id="canvas" width="1000" height="1000" />
 	</div>
 </body>
 </html>

@@ -2,13 +2,23 @@ function Game(canvas) {
 	console.log("Game: New game started");
 	this.fontsize = 10;
 	this.font = "san-serif";
-	this.mapsize=64;
-	this.renderradius=35;
+	this.mapsize=128;
+	this.renderradius=40;
 	this.losCalculator = new LineOfSightCalculator(30.0);
 	this.pathfinder = new AStarPathFinder(new ManhattanHeuristic());
 	this.player = new GameObject("@", "player", new MapPosition(10, 10), 10,new Color(0,0.9,0.9));
 	this.player.speed=0.03;
-	this.player.light=new LightSource(this.losCalculator,new Color(4000.0,1500.0,400.0));
+	
+	var playerTorchFunction = function(){
+		var time = new Date().getTime();
+		var strength = 80+20*Math.sin(time/20)
+		var red = 35+5*Math.sin(time/32)
+		var green = 15+4*Math.sin(time/31)
+		var blue = 4+Math.sin(time/41)
+		return new Color(strength*red,strength*green,strength*blue);
+	};
+	
+	this.player.light=new LightSource(this.losCalculator,playerTorchFunction);
 	
 	this.engine = new GameEngine(new GameState(this.mapsize));
 	this.engine.addTrigger(new GameObjectMover(this.pathfinder, 50));
