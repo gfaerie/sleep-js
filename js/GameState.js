@@ -113,9 +113,9 @@ GameEngine.prototype = {
 		
 			// find triggers for this event by using its type (indexed by event class type)
 			var type = this.pendingEvents[e].type;
-			var triggerMap = this.getTriggerMap(type)
+			var triggerMap = this.getTriggerMap(type);
+
 				for (id in triggerMap) {
-				
 					// get the trigger
 					var trigger = triggerMap[id].trigger(this, this.pendingEvents[e]);
 					

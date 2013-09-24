@@ -4,11 +4,21 @@ function Game(canvas) {
 	this.font = "san-serif";
 	this.mapsize=128;
 	this.renderradius=40;
-	this.losCalculator = new LineOfSightCalculator(30.0);
-	this.pathfinder = new AStarPathFinder(new ManhattanHeuristic());
-	this.player = new GameObject("@", "player", new MapPosition(10, 10), 10,function(){return new Color(0,0.9,0.9)});
-	this.player.speed=0.03;
 	
+	this.engine = new GameEngine(new GameState(this.mapsize));
+	var losCalculator = new LineOfSightCalculator(30.0);
+	var pathfinder = new AStarPathFinder(new ManhattanHeuristic());
+	
+	
+	
+	var ctx = canvas.getContext("2d");
+
+	this.floor = new GameBackGround(false, ".", 1,  function(seed){return new Color(0.4 + (seed % 7) * 0.01, 0.4 + (seed % 7) * 0.01, 0.4 + (seed % 7) * 0.01)});
+	this.wall = new GameBackGround(true, "#", -1,  function(seed){return new Color(0.4 + (seed % 9) * 0.03, 0.4 + (seed % 9) * 0.03, 0.4 + (seed % 9) * 0.03)});
+	this.water = new GameBackGround(false, "~", 10,  function(seed){return new Color(0.990 + (seed % 7) * 0.001, 0.990 + (seed % 8) * 0.001, 0.2 + (seed % 9) * 0.01)});
+	
+	var player = new GameObject("@", "player", new MapPosition(10, 10), 10,function(){return new Color(0,0.9,0.9)});
+	player.speed=0.03;
 	var playerTorchFunction = function(){
 		var time = new Date().getTime();
 		var strength = 80+20*Math.sin(time/20)
@@ -17,18 +27,21 @@ function Game(canvas) {
 		var blue = 4+Math.sin(time/41)
 		return new Color(strength*red,strength*green,strength*blue);
 	};
+	player.light=new LightSource(losCalculator,playerTorchFunction);
+	this.playerid = this.engine.state.addObject(player);
 	
-	this.player.light=new LightSource(this.losCalculator,playerTorchFunction);
+	var lightCaster = new LightCaster(30);
+	var renderer = new GameStateRenderer(this.playerid, ctx, this.renderradius, this.font, this.fontsize, "rgb(0,0,0)", new CappedColorBlender(), new WhiteLightColorBlender(),30);
+
+
 	
-	this.engine = new GameEngine(new GameState(this.mapsize));
-	this.engine.addTrigger(new GameObjectMover(this.pathfinder, 50));
-	this.playerid = this.engine.state.addObject(this.player);
-	var ctx = canvas.getContext("2d");
-	this.renderer = new GameStateRenderer(this.playerid, ctx, this.renderradius, this.font, this.fontsize, "rgb(0,0,0)", new CappedColorBlender(), new WhiteLightColorBlender());
-	this.lightCaster = new LightCaster();
-	this.floor = new GameBackGround(false, ".", 1,  function(seed){return new Color(0.4 + (seed % 7) * 0.01, 0.4 + (seed % 7) * 0.01, 0.4 + (seed % 7) * 0.01)});
-	this.wall = new GameBackGround(true, "#", -1,  function(seed){return new Color(0.4 + (seed % 9) * 0.03, 0.4 + (seed % 9) * 0.03, 0.4 + (seed % 9) * 0.03)});
-	this.water = new GameBackGround(false, "~", 10,  function(seed){return new Color(0.990 + (seed % 7) * 0.001, 0.990 + (seed % 8) * 0.001, 0.2 + (seed % 9) * 0.01)});
+	this.engine.addTrigger(renderer);
+	this.engine.addTrigger(lightCaster);
+	this.engine.addTrigger(new GameObjectMover(pathfinder, 50));
+
+
+
+	
 }
 
 Game.prototype = {
@@ -52,8 +65,6 @@ Game.prototype = {
 			count = count+1;
 			var start = new Date().getTime();
 			parent.engine.update();
-			parent.lightCaster.castLight(parent.engine.state);
-			parent.renderer.render(parent.engine);
 			var end = new Date().getTime();
 			total = total + end-start;
 			

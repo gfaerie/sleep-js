@@ -69,7 +69,17 @@ function WhiteLightColorBlender() {
 	}
 }
 
-function LightCaster() {
+function LightCaster(period) {
+	this.period = period;
+	this.lastcall = 0;
+	this.eventType = "TimeElapsed";
+	this.trigger = function (engine, event) {
+		var parent = this;
+		if (event instanceof TimeElapsed && event.time > (parent.lastcall + parent.period)) {
+			parent.lastcall = event.time;
+			return function(){parent.castLight(engine.state)};
+		}
+	}
 	this.castLight = function (state) {
 		//zero the current light
 		for (var i = 0; i < state.size; i++) {
