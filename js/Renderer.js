@@ -47,7 +47,7 @@ GameStateRenderer.prototype = {
 			for (var y = yStart; y <= yEnd; y++) {
 				graphics[x - xStart][y - yStart] = engine.state.map[x][y].graphics;
 				if(engine.state.light[x] && engine.state.light[x][y]){
-					light[x - xStart][y - yStart] = parent.backgroundBlender.blend(engine.state.light[x][y],engine.state.map[x][y].color);
+					light[x - xStart][y - yStart] = parent.backgroundBlender.blend(engine.state.light[x][y],engine.state.map[x][y].color(x + 31 * y));
 				}
 			}
 		}
@@ -58,7 +58,7 @@ GameStateRenderer.prototype = {
 			if (object.position.x >= xStart && object.position.x <= xEnd && object.position.y >= yStart && object.position.y <= yEnd && object.graphics) {
 				graphics[object.position.x - xStart][object.position.y - yStart] = object.graphics;		
 				if(engine.state.light[object.position.x] && engine.state.light[object.position.x][object.position.y]){
-					light[object.position.x - xStart][object.position.y - yStart] = parent.objectBlender.blend(engine.state.light[object.position.x][object.position.y],object.color);
+					light[object.position.x - xStart][object.position.y - yStart] = parent.objectBlender.blend(engine.state.light[object.position.x][object.position.y],object.color());
 				}
 			}
 		}

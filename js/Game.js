@@ -6,7 +6,7 @@ function Game(canvas) {
 	this.renderradius=40;
 	this.losCalculator = new LineOfSightCalculator(30.0);
 	this.pathfinder = new AStarPathFinder(new ManhattanHeuristic());
-	this.player = new GameObject("@", "player", new MapPosition(10, 10), 10,new Color(0,0.9,0.9));
+	this.player = new GameObject("@", "player", new MapPosition(10, 10), 10,function(){return new Color(0,0.9,0.9)});
 	this.player.speed=0.03;
 	
 	var playerTorchFunction = function(){
@@ -26,9 +26,9 @@ function Game(canvas) {
 	var ctx = canvas.getContext("2d");
 	this.renderer = new GameStateRenderer(this.playerid, ctx, this.renderradius, this.font, this.fontsize, "rgb(0,0,0)", new CappedColorBlender(), new WhiteLightColorBlender());
 	this.lightCaster = new LightCaster();
-	this.floor = new GameBackGround(false, ".", 1, new Color(0.3,0.3,0.3));
-	this.wall = new GameBackGround(true, "#", -1, new Color(0.5,0.5,0.5));
-	this.water = new GameBackGround(false, "~", 10, new Color(0.92,0.92,0.05));
+	this.floor = new GameBackGround(false, ".", 1,  function(seed){return new Color(0.4 + (seed % 7) * 0.01, 0.4 + (seed % 7) * 0.01, 0.4 + (seed % 7) * 0.01)});
+	this.wall = new GameBackGround(true, "#", -1,  function(seed){return new Color(0.4 + (seed % 9) * 0.03, 0.4 + (seed % 9) * 0.03, 0.4 + (seed % 9) * 0.03)});
+	this.water = new GameBackGround(false, "~", 10,  function(seed){return new Color(0.990 + (seed % 7) * 0.001, 0.990 + (seed % 8) * 0.001, 0.2 + (seed % 9) * 0.01)});
 }
 
 Game.prototype = {
