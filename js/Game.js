@@ -28,10 +28,10 @@ function Game(canvas) {
 		return new Color(strength*red,strength*green,strength*blue);
 	};
 	player.light=new LightSource(losCalculator,playerTorchFunction);
-	this.playerid = this.engine.state.addObject(player);
+	var playerid = this.engine.state.addObject(player);
 	
 	var lightCaster = new LightCaster(30);
-	var renderer = new GameStateRenderer(this.playerid, ctx, this.renderradius, this.font, this.fontsize, "rgb(0,0,0)", new CappedColorBlender(), new WhiteLightColorBlender(),30);
+	var renderer = new GameStateRenderer(playerid, ctx, this.renderradius, this.font, this.fontsize, "rgb(0,0,0)", new CappedColorBlender(), new WhiteLightColorBlender(),30);
 
 
 	
@@ -39,23 +39,13 @@ function Game(canvas) {
 	this.engine.addTrigger(lightCaster);
 	this.engine.addTrigger(new GameObjectMover(pathfinder, 50));
 
-
-
-	
+	this.inputHandler = new PlayerInputHandler(playerid,this.engine,this.fontsize,this.renderradius,"#canvas");
 }
 
 Game.prototype = {
 	start : function () {
 		var parent = this;
-		// click means players want to move there, right now we teleport
-		$("#canvas").click(function (e) {
-			var x = Math.floor((e.pageX - $(this).offset().left) / parent.fontsize)-parent.renderradius;
-			var y = Math.floor((e.pageY - $(this).offset().top) / parent.fontsize)-parent.renderradius;
-			var target = parent.engine.state.objects[parent.playerid].position.translate(x,y);
-			if(parent.engine.state.insideGame(target)){			
-				parent.engine.state.objects[parent.playerid].path = [target];
-			}
-		});
+		
 		this.populateMap();
 		
 		var total = 0;

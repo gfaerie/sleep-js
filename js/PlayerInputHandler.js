@@ -1,19 +1,11 @@
-function PlayerInputHandler(playerid, engine, fontsize, canvas){
-	this.playerid=playerid;
-	this.engine=engine;
-	this.fontsize=fontsize;
-	this.canvas=canvas;
-}
-
-PlayerInputHandler.prototype={
-	clickHandler : function(e){
-		  var x = Math.floor((e.pageX-$(this).offset().left) / this.fontsize);
-		  var y = Math.floor((e.pageY-$(this).offset().top) / this.fontsize);
-		  var newPath = [];
-		  newPath.push(new MapPosition(x,y));
-		  engine.state.objects[playerid].path=newPath;
-	},
-	setPath . function(x,y){
-	
-	}
+function PlayerInputHandler(playerid, engine, fontsize,renderradius, canvasSelector) {
+	var parent = this;
+	$(canvasSelector).click(function (e) {
+		var x = Math.floor((e.pageX - $(this).offset().left) / fontsize) - renderradius;
+		var y = Math.floor((e.pageY - $(this).offset().top) / fontsize) - renderradius;
+		var target = engine.state.objects[playerid].position.translate(x, y);
+		if (engine.state.insideGame(target)) {
+			engine.state.objects[playerid].path = [target];
+		}
+	});
 }
